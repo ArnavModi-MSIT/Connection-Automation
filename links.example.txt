@@ -1,0 +1,2 @@
+# Copy this file to links.txt, replace the example, and add one profile per line.
+https://www.linkedin.com/in/replace-with-profile-slug/

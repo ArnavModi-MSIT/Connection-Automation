@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connection queue</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script src="profile.js" defer></script>
+  <script src="runner.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="page-header">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">↗</span><span>Connection queue</span></div>
+      <span class="local-badge"><span class="dot"></span> Local on your computer</span>
+    </header>
+
+    <section class="intro" aria-labelledby="title">
+      <p class="eyebrow">LINKEDIN CONNECTIONS</p>
+      <h1 id="title">Paste links. Start your queue.</h1>
+      <p>Use your existing LinkedIn login in Chrome or Firefox.</p>
+    </section>
+
+    <p id="setup-hint" class="setup-hint" hidden>Open this page from the installed browser extension. <a href="../INSTALL.html">One-time setup ↗</a></p>
+
+    <div class="workspace">
+      <section class="card input-card" aria-labelledby="links-label">
+        <div class="card-heading"><h2 id="links-label">Profile links</h2><span id="links-count" class="muted">0 links</span></div>
+        <label class="helper" for="links">Paste one LinkedIn profile URL per line.</label>
+        <textarea id="links" rows="9" spellcheck="false" autocomplete="off" maxlength="200000" placeholder="https://www.linkedin.com/in/profile-one/&#10;https://www.linkedin.com/in/profile-two/"></textarea>
+        <div class="under-input"><span>Duplicate links are skipped automatically.</span><button id="clear" class="text-button" type="button">Clear</button></div>
+
+        <details id="options">
+          <summary>Options <span class="muted">note, delay &amp; limit</span></summary>
+          <div class="options-content">
+            <label for="note">Invitation note <span class="muted">optional · same note for all profiles</span></label>
+            <textarea id="note" rows="3" maxlength="200" placeholder="Add a short introduction, or leave empty."></textarea>
+            <div class="settings-grid">
+              <div><label for="limit">Profile limit</label><input id="limit" type="number" min="1" step="1" placeholder="All remaining"></div>
+              <div><label for="delay">Delay in seconds</label><input id="delay" type="number" min="0" max="3600" step="0.5" value="5"></div>
+            </div>
+          </div>
+        </details>
+
+        <p id="error" class="error-box" role="alert" hidden></p>
+        <div class="actions">
+          <button id="send" class="button primary" type="button" disabled>Send requests <span aria-hidden="true">↗</span></button>
+          <button id="preview" class="button secondary" type="button" disabled>Preview</button>
+          <button id="stop" class="button stop" type="button" hidden>Stop after current</button>
+        </div>
+        <p class="action-hint">Preview checks the links in the browser without sending requests.</p>
+      </section>
+
+      <section class="card results-card" aria-labelledby="results-heading">
+        <div class="card-heading"><h2 id="results-heading">Queue progress</h2><span id="phase" class="phase-badge">Ready</span></div>
+        <p id="status" class="status-message" role="status" aria-live="polite">Paste links to get started.</p>
+        <progress id="progress" max="100" value="0" aria-label="Queue progress"></progress>
+        <p id="progress-label" class="progress-label muted">Results will appear here as each profile finishes.</p>
+        <div id="empty" class="empty-state"><span aria-hidden="true">☷</span><strong>Your queue is empty</strong><p>Add profile links on the left.<br>Use Preview to check them first.</p></div>
+        <ol id="results" class="result-list" aria-label="Profile results"></ol>
+      </section>
+    </div>
+
+    <p class="policy-note"><span aria-hidden="true">ⓘ</span> Automated invitations can lead to LinkedIn account restrictions. <a href="https://www.linkedin.com/help/linkedin/answer/a1341387" target="_blank" rel="noopener noreferrer">LinkedIn’s rules ↗</a></p>
+    <footer>No separate login. Keep this page and its LinkedIn tab open while the queue runs. <span id="version"></span></footer>
+  </main>
+</body>
+</html>
