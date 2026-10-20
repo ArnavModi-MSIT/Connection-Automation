@@ -33,7 +33,7 @@ class ExistingBrowserQueue {
     this.onChange = onChange;
     this.stopRequested = false;
     this.state = { busy: false, mode: "idle", phase: "idle", message: "Paste links to get started.", total: 0, processed: 0, results: [] };
-    this.skip = new Set(["sent", "pending", "connected", "sending", "review_required"]);
+    this.skip = new Set(["sent", "pending", "connected", "email_required", "sending", "review_required"]);
     this.tabReplacements = new Map();
     // Chrome may swap a tab during prerendered navigation. Its old ID then
     // stops working even though the profile remains open in the browser.
@@ -197,7 +197,7 @@ class ExistingBrowserQueue {
           stage = "sending the invitation";
           answer = await this.inject(profileTab, current, true, note || null);
         }
-        if (attempted && !["sent", "pending", "connected", "review_required"].includes(answer.status)) {
+        if (attempted && !["sent", "pending", "connected", "email_required", "review_required"].includes(answer.status)) {
           answer = { status: "review_required", detail: answer.detail + " The attempt is reserved; review manually before retrying." };
         }
         await this.result(current, answer.status, answer.detail, history);
@@ -219,7 +219,7 @@ class ExistingBrowserQueue {
       if (attempted && history[current]?.status !== "sent") detail += " A send attempt was reserved; check this profile manually. It will not be retried automatically.";
       this.state.phase = "error";
       this.state.message = detail;
-      if (current && !["halted", "review_required", "sent", "pending", "connected"].includes(history[current]?.status)) {
+      if (current && !["halted", "review_required", "sent", "pending", "connected", "email_required"].includes(history[current]?.status)) {
         try { await this.result(current, attempted ? "review_required" : "halted", detail, history); }
         catch {
           Object.assign(this.state.results.find((row) => row.url === current), { status: attempted ? "review_required" : "halted", detail });

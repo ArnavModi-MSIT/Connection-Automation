@@ -468,10 +468,41 @@ class ExistingBrowserExtensionTests(unittest.TestCase):
         self.assertNotIn(SECOND, self.history())
         self.assertEqual(self.profile().evaluate("sendCount"), 0)
 
-    def test_email_prompt_stops_without_submitting(self):
+    def test_email_prompt_is_skipped_without_submitting(self):
         self.html = fixture(behavior="email")
         self.start()
-        self.phase("Needs attention")
+        self.phase()
+        self.assertEqual(self.history()[TARGET]["status"], "email_required")
+        self.assertEqual(self.profile().evaluate("sendCount"), 0)
+
+    def test_email_screenshot_is_dismissed_and_queue_continues(self):
+        html = screenshot_flow_fixture().replace(
+            'Personalize your invitation to Target Person by adding a note.',
+            'To verify this member knows you, please enter their email to connect. You can also include a personal note.<input type="text">')
+        html = html.replace('<h2>Add a note to your invitation?</h2>',
+            '<button aria-label="Dismiss" onclick="window.inviteDialog.remove();sessionStorage.emailDismissed=1">×</button><h2>Add a note to your invitation?</h2>')
+        html = html.replace('aria-label="Confirm this connection request"', 'disabled aria-label="Confirm this connection request"')
+        self.profile_fixtures[TARGET] = html
+        self.profile_fixtures[SECOND] = screenshot_flow_fixture()
+        self.start(TARGET + "\n" + SECOND)
+        self.phase()
+        self.assertEqual(self.history()[TARGET]["status"], "email_required")
+        self.assertEqual(self.history()[SECOND]["status"], "sent")
+        self.assertEqual(self.profile().evaluate("sessionStorage.getItem('emailDismissed')"), "1")
+        self.assertEqual(self.ui.locator("#results .result-status").all_text_contents(), ["Skipped (email required)", "Sent"])
+        self.assertEqual(self.profile().evaluate("sendCount"), 1)
+        self.requests.clear()
+        self.start(TARGET)
+        self.phase()
+        self.assertEqual(self.requests, [])
+
+    def test_email_prompt_does_not_add_note_or_click_send(self):
+        self.html = fixture(behavior="email")
+        self.ui.locator("#note").fill("An optional note")
+        self.start()
+        self.phase()
+        self.assertEqual(self.history()[TARGET]["status"], "email_required")
+        self.assertEqual(self.profile().locator('input[type="email"]').input_value(), "")
         self.assertEqual(self.profile().evaluate("sendCount"), 0)
 
     def test_uncertain_send_is_not_reported_successful(self):

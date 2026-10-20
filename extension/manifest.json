@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Local Connection Queue",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "A local connection queue using the LinkedIn session in your existing browser.",
   "permissions": ["storage", "scripting"],
   "host_permissions": ["https://*.linkedin.com/*", "https://linkedin.com/*"],

@@ -7,7 +7,7 @@ let online = false;
 let pendingRequest = false;
 let state = { busy: false, phase: "idle", mode: "idle", results: [] };
 const phaseNames = { idle: "Ready", running: "Running", stopping: "Stopping", complete: "Complete", stopped: "Stopped", error: "Needs attention" };
-const statusNames = { queued: "Queued", sending: "Sending", sent: "Sent", pending: "Skipped (pending)", connected: "Connected", would_send: "Ready to send", unavailable: "Unavailable", review_required: "Review needed", halted: "Stopped", not_selected: "Outside limit" };
+const statusNames = { queued: "Queued", sending: "Sending", sent: "Sent", pending: "Skipped (pending)", email_required: "Skipped (email required)", connected: "Connected", would_send: "Ready to send", unavailable: "Unavailable", review_required: "Review needed", halted: "Stopped", not_selected: "Outside limit" };
 
 function showError(message) {
   $("error").textContent = message;

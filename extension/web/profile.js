@@ -205,7 +205,12 @@ async function inspectOrSendProfile(request) {
       let modal = response;
       if (!/\binvitation\b|\binvite\b|\bconnect\b/i.test(modal.innerText)) throw new Error("Unrecognized invitation dialog. No Send click attempted.");
       if (one(modal.querySelectorAll('input[type="email"]'), "email fields") || /(?:enter|provide).{0,40}email/i.test(modal.innerText)) {
-        throw new Error("This profile requires an email address. Queue stopped.");
+        const dismiss = buttons(modal, /^(?:(?:Dismiss|Close)(?: (?:dialog|invitation|modal))?|Cancel)$/i);
+        if (dismiss && !disabled(dismiss)) {
+          dismiss.click();
+          if (!(await waitFor(() => !visible(modal)))) throw new Error("The email-required invitation prompt could not be closed. Review manually.");
+        }
+        return { status: "email_required", detail: "Skipped: this profile requires their email address. No invitation sent." };
       }
       if (request.note) {
         const addNote = buttons(modal, /^Add a note$/i);

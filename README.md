@@ -24,6 +24,8 @@ If the requested profile already shows **Pending**, the result is **Skipped (pen
 
 An optional note, delay, and profile limit are under **Options**. Empty limit means all remaining links. The extension opens one dedicated LinkedIn tab, brings it forward while checking the profile, and returns to the queue page after each result. It reuses that LinkedIn tab and leaves it open afterward. Keep both tabs open while it runs. Closing or reloading the queue page interrupts the queue; an in-flight invitation may still complete and its durable `sending` record stays skipped for manual review.
 
+If an invitation asks for the member's email address, the extension marks the profile **Skipped (email required)**, closes the prompt when a recognizable Close or Dismiss button is available, and continues to the next link without entering an email or clicking Send. These results are saved and skipped on later runs. If there is no recognizable close control, the next profile navigation clears the prompt.
+
 If LinkedIn needs fresh authentication or verification, the queue stops. Resolve that normally in your browser before retrying. It never guesses an email address, bypasses verification, or reports success just because it clicked Send. `sent` requires Pending to appear in the requested profile's action area.
 
 ## Progress and privacy
@@ -46,7 +48,7 @@ python build_extension.py
 
 The builder copies an explicit asset allowlist and creates `connection-queue.zip` containing only extension files. It excludes private data, browser profiles, logs, and Python code. After rebuilding, reload the extension in its browser's extension manager.
 
-**Updating an existing installation:** Stop the queue, reload **Local Connection Queue** at `chrome://extensions` (or Firefox's debugging page), close the old queue page, then reopen the extension toolbar icon. The footer should show **v0.2.6**. Use **Preview** first. Reloading the existing installation keeps Chrome's saved request history; do not remove and reinstall it to update.
+**Updating an existing installation:** Stop the queue, reload **Local Connection Queue** at `chrome://extensions` (or Firefox's debugging page), close the old queue page, then reopen the extension toolbar icon. The footer should show **v0.2.7**. Use **Preview** first. Reloading the existing installation keeps Chrome's saved request history; do not remove and reinstall it to update.
 
 If you see **No tab with id**, the browser no longer recognizes the tab ID used by the old version. Version 0.2.1 tracks tab replacements and can recover a single exact-profile tab in the same window before sending. Closing the LinkedIn tab stops the queue. A failed or interrupted send remains reserved for manual review and is never automatically retried.
 
